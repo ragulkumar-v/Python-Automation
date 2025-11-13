@@ -1,0 +1,213 @@
+Title
+
+Standard Operating Procedure (SOP): Download, Unzip, Convert DAT to CSV, and Merge CSV Files
+
+1. Purpose
+
+To define a repeatable process for:
+
+Downloading ZIP files containing SEC Rule 605 datasets from a specified website.
+
+Unzipping the downloaded archives.
+
+Converting .dat files to .csv.
+
+Merging all CSV files into one consolidated dataset.
+
+2. Scope
+
+This procedure applies to any user who needs to collect and standardize SEC Rule 605 datasets using the four Python scripts in this project.
+
+3. Pre-Requisites
+
+Software
+
+Python 3.x installed.
+
+Google Chrome installed.
+
+ChromeDriver installed and on the system PATH.
+
+Python Packages
+
+selenium
+
+pandas
+
+Folder Setup
+
+A base folder for all data, e.g.
+C:/RA work/SEC Rule 605 Datasets/EXBL
+
+The scripts ZIP_Download_driver.py, Unzip_file.py, convert_csv.py, Merge_CSV_Files.py stored in this folder.
+
+Access
+
+Internet access to the target disclosure page that lists the ZIP files.
+
+4. Detailed Procedure
+Step 1 – Download ZIP Files
+
+Open ZIP_Download_driver.py in an editor. 
+
+1.2 ZIP_Download_driver
+
+Set:
+
+URL to the webpage that lists the .zip files.
+
+DOWNLOAD_DIRECTORY to your desired download folder (e.g., EXBL).
+
+Save the script.
+
+Open a terminal / command prompt in the project folder.
+
+Run:
+
+python ZIP_Download_driver.py
+
+
+Wait for the script to:
+
+Open Chrome.
+
+Click each .zip link.
+
+Complete all downloads (the console will show messages when finished). 
+
+1.2 ZIP_Download_driver
+
+Output: A set of .zip files in DOWNLOAD_DIRECTORY.
+
+Step 2 – Unzip All ZIP Files
+
+Open Unzip_file.py. 
+
+2. Unzip_file
+
+Set:
+
+main_folder_path to the folder where the ZIP files were downloaded (EXBL).
+
+output_folder_path to the destination for unzipped contents (e.g. EXBL/unzip).
+
+Save the script.
+
+Run:
+
+python Unzip_file.py
+
+
+Monitor the console output for messages like Extracting <zip_path> to <extract_to> and any errors.
+
+Output: All archives extracted into the unzip folder (or inside the same folder as each ZIP, depending on your configuration).
+
+Step 3 – Convert DAT Files to CSV
+
+Ensure Unzip_file.py completed successfully and .dat files exist inside the unzip folder and its subfolders.
+
+Open convert_csv.py. 
+
+4.convert_csv
+
+Set:
+
+main_folder_path to your unzipped folder (e.g. EXBL/unzip).
+
+target_folder_path to your CSV output folder (e.g. EXBL/csv).
+
+Save the script.
+
+Run:
+
+python convert_csv.py
+
+
+The script will:
+
+Walk through all subfolders under main_folder_path.
+
+Detect all .dat files.
+
+For each .dat, create a corresponding .csv in target_folder_path, preserving the subfolder structure. 
+
+4.convert_csv
+
+Output: A mirror folder tree under csv/ containing CSV versions of all .dat files.
+
+Step 4 – Merge All CSV Files into a Single File
+
+Verify that the csv folder contains all the expected .csv files.
+
+Open Merge_CSV_Files.py. 
+
+3.Merge_CSV_Files
+
+Set:
+
+input_folder to the csv folder (e.g. EXBL/csv).
+
+output_file to the desired merged CSV path and name (e.g. EXBL/EXBL.csv).
+
+Save the script.
+
+Run:
+
+python Merge_CSV_Files.py
+
+
+The script will:
+
+Collect all .csv files in input_folder.
+
+Read the first file and include its header.
+
+Append all remaining files while skipping their header row. 
+
+3.Merge_CSV_Files
+
+Save the merged result to output_file.
+
+Output: A single consolidated CSV containing all rows from individual CSVs.
+
+5. Verification & Quality Checks
+
+After completing Step 4:
+
+Open the merged CSV (e.g. EXBL.csv) in Excel or a text editor.
+
+Check:
+
+The header row appears only once.
+
+The total number of rows matches expectations.
+
+Sample rows from different original files are present.
+
+If anything looks off, verify:
+
+That all .dat files were found and converted (convert_csv.py output).
+
+That all expected CSVs are present in input_folder.
+
+That no errors were printed during merging.
+
+6. Troubleshooting
+
+Browser not opening or Selenium errors
+
+Check ChromeDriver version compatibility.
+
+Ensure ChromeDriver is installed and on PATH.
+
+ZIP files not extracting
+
+Look for “Bad zip file” messages from Unzip_file.py. 
+
+2. Unzip_file
+
+Try manually opening a few ZIPs to verify they’re not corrupted.
+
+CSV header or column issues
+
+Confirm that the header line in convert_csv.py matches the actual data format.
