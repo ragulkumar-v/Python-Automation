@@ -1,0 +1,206 @@
+Standard Operating Procedure: PDF → Word → CSV Transformation Workflow
+1. Objective
+
+To standardize the extraction, transformation, and consolidation of SEC Rule 606 filing data.
+
+2. Required Tools
+
+Python 3.x
+
+Python libraries:
+
+pdf2docx
+
+pandas
+
+python-docx
+
+numpy
+
+Word processor or PDF-to-Word converter
+
+Install dependencies:
+
+pip install pdf2docx pandas python-docx numpy openpyxl
+
+3. Step-by-Step Procedure
+STEP 1 — Unzip the ZIP Files
+
+Open 1.Unzip_file.py.
+
+Set:
+
+main_folder_path
+
+output_folder_path
+
+Run:
+
+python 1.Unzip_file.py
+
+
+ZIP functionality: folder-walk + extraction using zipfile.ZipFile 
+
+1.Unzip_file
+
+.
+
+STEP 2 — Convert PDFs to Word
+
+Run:
+
+python 2.Pdf_to_word.py
+
+
+All PDFs in the input folder are converted to .docx and stored in the configured output folder.
+
+Uses pdf2docx.Converter for conversion.
+Conversion function: 
+
+2.Pdf_to_word
+
+.
+
+STEP 3 — Extract Tables from Word Files
+
+Run:
+
+python 3.Extract_tables.py
+
+
+The script:
+
+Identifies month headings
+
+Captures 6 tables under each month
+
+Merges split tables
+
+Extracts Table 2 for S&P 500 and Non-S&P 500
+
+Saves output CSVs in per-file folders
+
+Month-to-table mapping + extraction: 
+
+3.Extract_tables
+
+.
+
+STEP 4 — Generate Base CSV Template
+
+Run:
+
+python 4.Base_CSV_Generation.py
+
+
+This script:
+
+Reads PDF names
+
+Derives year/quarter
+
+Prompts for broker name and headers
+
+Creates a 72-row base CSV file
+
+Inserts:
+
+Broker name
+
+Year
+
+Month blocks
+
+SP500 flags
+
+Empty columns for future data
+
+CSV generation logic: 
+
+4. Base_CSV_Generation
+
+.
+
+📌 STEP 5 — MANUAL STEP: Populate Base CSV Files
+
+For each PDF:
+
+Open extracted Table 2 files from Step 3:
+
+<Month>_SP500_Table2.csv
+
+<Month>_NonSP500_Table2.csv
+
+Open corresponding Base CSV file generated in Step 4.
+
+Copy & paste venue names + all numerical fields into matching rows.
+
+Validate column alignment.
+
+Save all base CSVs.
+
+Proceed once all base CSV files are populated.
+
+STEP 6 — Combine All Sheets for Each Company
+
+Run:
+
+python "5.Combine Each Sheet of company.py"
+
+
+This script:
+
+Reads all CSV/XLSX in the folder
+
+Keeps first file as base
+
+Trims blank rows
+
+Aligns columns
+
+Appends all remaining data
+
+Exports a consolidated Combined.xlsx
+
+Combination logic: 
+
+5.Combine Each Sheet of company
+
+.
+
+STEP 7 — Combine All Company Files Together
+
+Run:
+
+python "6.Combine All Company sheet.py"
+
+
+This:
+
+Reads all companies’ CSV output files
+
+Uses first file as the base
+
+Appends all other data
+
+Produces a master combined Excel sheet
+
+Global merge functionality: 
+
+6.Combine All Company sheet
+
+.
+
+4. Validation Checklist
+
+All DOCX conversions succeeded.
+
+Table 2 extracted for each month.
+
+Base CSVs contain 72 rows and correct broker/year/month/SP500 values.
+
+Venue and data fields correctly copied.
+
+Combined company-level files contain expected totals.
+
+Master file contains all companies.
